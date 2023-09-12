@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.scss";
 
 import usersFromServer from "./api/users";
@@ -24,6 +24,8 @@ export const App = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [query, setQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [sortType, setSortType] = useState(null);
+  const [isReversed, setIsReversed] = useState(false);
 
   const filteredProducts = products
     .filter((product) =>
@@ -62,6 +64,15 @@ export const App = () => {
       );
     } else {
       setSelectedCategories([...selectedCategories, category]);
+    }
+  };
+
+  const handleSortClick = (type) => {
+    if (type === sortType) {
+      setIsReversed(!isReversed);
+    } else {
+      setSortType(type);
+      setIsReversed(false);
     }
   };
 
@@ -189,7 +200,7 @@ export const App = () => {
                 <th>
                   <span className="is-flex is-flex-wrap-nowrap">
                     Product
-                    <a href="#/">
+                    <a href="#/" onClick={() => handleSortClick("name")}>
                       <span className="icon">
                         <i data-cy="SortIcon" className="fas fa-sort-down" />
                       </span>
@@ -200,7 +211,7 @@ export const App = () => {
                 <th>
                   <span className="is-flex is-flex-wrap-nowrap">
                     Category
-                    <a href="#/">
+                    <a href="#/" onClick={() => handleSortClick("category")}>
                       <span className="icon">
                         <i data-cy="SortIcon" className="fas fa-sort-up" />
                       </span>
@@ -211,7 +222,7 @@ export const App = () => {
                 <th>
                   <span className="is-flex is-flex-wrap-nowrap">
                     User
-                    <a href="#/">
+                    <a href="#/" onClick={() => handleSortClick("user")}>
                       <span className="icon">
                         <i data-cy="SortIcon" className="fas fa-sort" />
                       </span>
