@@ -23,9 +23,7 @@ const products = productsFromServer.map((product) => {
 export const App = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [query, setQuery] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState(
-    categoriesFromServer.map((category) => category.title)
-  );
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
   const filteredProducts = products
     .filter((product) =>
@@ -35,7 +33,10 @@ export const App = () => {
       product.name.toLowerCase().includes(query.toLowerCase())
     )
     .filter((product) => {
-      return selectedCategories.includes(product.category);
+      return (
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(product.category)
+      );
     });
 
   const handleInputChange = (e) => {
