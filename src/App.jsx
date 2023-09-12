@@ -22,6 +22,10 @@ const products = productsFromServer.map((product) => {
 
 export const App = () => {
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const filteredProducts = products.filter((product) =>
+    selectedUser ? product.user === selectedUser.name : true
+  );
   return (
     <div className="section">
       <div className="container">
@@ -181,38 +185,33 @@ export const App = () => {
             </thead>
 
             <tbody>
-              {products
-                .filter((product) =>
-                  selectedUser ? product.user === selectedUser.name : true
-                )
-                .map((product) => (
-                  <tr key={product.id} data-cy="Product">
-                    <td className="has-text-weight-bold" data-cy="ProductId">
-                      {product.id}
-                    </td>
-                    <td data-cy="ProductName">{product.name}</td>
-                    <td data-cy="ProductCategory">
-                      {
-                        categoriesFromServer.find(
-                          (category) => category.title === product.category
-                        ).icon
-                      }{" "}
-                      - {product.category}
-                    </td>
-                    <td
-                      data-cy="ProductUser"
-                      className={
-                        usersFromServer.find(
-                          (user) => user.name === product.user
-                        ).sex === "m"
-                          ? "has-text-link"
-                          : "has-text-danger"
-                      }
-                    >
-                      {product.user}
-                    </td>
-                  </tr>
-                ))}
+              {filteredProducts.map((product) => (
+                <tr key={product.id} data-cy="Product">
+                  <td className="has-text-weight-bold" data-cy="ProductId">
+                    {product.id}
+                  </td>
+                  <td data-cy="ProductName">{product.name}</td>
+                  <td data-cy="ProductCategory">
+                    {
+                      categoriesFromServer.find(
+                        (category) => category.title === product.category
+                      ).icon
+                    }{" "}
+                    - {product.category}
+                  </td>
+                  <td
+                    data-cy="ProductUser"
+                    className={
+                      usersFromServer.find((user) => user.name === product.user)
+                        .sex === "m"
+                        ? "has-text-link"
+                        : "has-text-danger"
+                    }
+                  >
+                    {product.user}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
