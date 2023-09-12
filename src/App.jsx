@@ -26,6 +26,7 @@ export const App = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [sortType, setSortType] = useState(null);
   const [isReversed, setIsReversed] = useState(false);
+  const [visibleProducts, setVisibleProducts] = useState(products);
 
   const filteredProducts = products
     .filter((product) =>
@@ -71,10 +72,32 @@ export const App = () => {
     if (type === sortType) {
       setIsReversed(!isReversed);
     } else {
-      setSortType(type);
       setIsReversed(false);
     }
+    setSortType(type);
   };
+
+  useEffect(() => {
+    const reorderProducts = () => {
+      const productsCopy = [...filteredProducts];
+
+      if (sortType === "name") {
+        productsCopy.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (sortType === "category") {
+        productsCopy.sort((a, b) => a.category.localeCompare(b.category));
+      } else if (sortType === "user") {
+        productsCopy.sort((a, b) => a.user.localeCompare(b.user));
+      }
+
+      if (isReversed) {
+        productsCopy.reverse();
+      }
+
+      setVisibleProducts(productsCopy);
+    };
+
+    reorderProducts();
+  }, [sortType, isReversed, filteredProducts]);
 
   return (
     <div className="section">
@@ -189,7 +212,7 @@ export const App = () => {
                 <th>
                   <span className="is-flex is-flex-wrap-nowrap">
                     ID
-                    <a href="#/">
+                    <a href="#/" onClick={() => handleSortClick("id")}>
                       <span className="icon">
                         <i data-cy="SortIcon" className="fas fa-sort" />
                       </span>
@@ -233,7 +256,7 @@ export const App = () => {
             </thead>
 
             <tbody>
-              {filteredProducts.map((product) => (
+              {visibleProducts.map((product) => (
                 <tr key={product.id} data-cy="Product">
                   <td className="has-text-weight-bold" data-cy="ProductId">
                     {product.id}
