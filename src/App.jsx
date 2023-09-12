@@ -22,10 +22,24 @@ const products = productsFromServer.map((product) => {
 
 export const App = () => {
   const [selectedUser, setSelectedUser] = useState(null);
+  const [query, setQuery] = useState("");
 
-  const filteredProducts = products.filter((product) =>
-    selectedUser ? product.user === selectedUser.name : true
-  );
+  const filteredProducts = products
+    .filter((product) =>
+      selectedUser ? product.user === selectedUser.name : true
+    )
+    .filter((product) =>
+      product.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+  const handleInputChange = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const clearInput = () => {
+    setQuery("");
+  };
+
   return (
     <div className="section">
       <div className="container">
@@ -64,21 +78,25 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={query}
+                  onChange={handleInputChange}
                 />
 
                 <span className="icon is-left">
                   <i className="fas fa-search" aria-hidden="true" />
                 </span>
 
-                <span className="icon is-right">
-                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
-                </span>
+                {query && (
+                  <span className="icon is-right">
+                    {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={clearInput}
+                    />
+                  </span>
+                )}
               </p>
             </div>
 
